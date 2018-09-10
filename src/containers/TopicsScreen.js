@@ -13,12 +13,16 @@ class TopicsScreen extends Component {
   }
 
   render() {
+    if (!this.props.rowsById) return this.renderLoading();
     return (
       <div className="TopicsScreen">
         <ListView
           rowsIdArray={this.props.rowsIdArray}
           rowsById={this.props.rowsById}
           renderRow={this.renderRow.bind(this)} />
+        {!this.props.canFinalizeSelection ? false :
+          <button className="NextScreeen" onClick={this.onNextScreenClick.bind(this)} />
+        }
       </div>
     );
   }
@@ -46,6 +50,10 @@ class TopicsScreen extends Component {
     this.props.dispatch(topicsActions.selectTopic(rowId));
   }
 
+  onNextScreenClick() {
+    this.props.dispatch(topicsActions.finalizeTopicSelection());
+  }
+
 }
 
 // inject props from global store state
@@ -53,7 +61,8 @@ function mapStateToProps(state) {
   return {
     rowsById: topicsSelectors.getTopicsByUrl(state),
     rowsIdArray: topicsSelectors.getTopicsUrlArray(state),
-    selectedIdsMap: topicsSelectors.getSelectedTopicUrlsMap(state)
+    selectedIdsMap: topicsSelectors.getSelectedTopicUrlsMap(state),
+    canFinalizeSelection: topicsSelectors.isTopicSelectionValid(state)
   };
 }
 
