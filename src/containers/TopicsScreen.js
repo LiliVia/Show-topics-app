@@ -21,7 +21,7 @@ class TopicsScreen extends Component {
           rowsById={this.props.rowsById}
           renderRow={this.renderRow.bind(this)} />
         {!this.props.canFinalizeSelection ? false :
-          <button className="NextScreeen" onClick={this.onNextScreenClick.bind(this)} />
+          <button className="NextScreen" onClick={this.onNextScreenClick.bind(this)} />
         }
       </div>
     );

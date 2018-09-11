@@ -6,8 +6,8 @@ import * as topicsSelectors from '../topics/reducer';
 export function fetchPosts() {
   return async (dispatch, getState) => {
     try {
-      const selectedTopicsUrls = topicsSelectors.getSelectedTopicUrls(getState());
-      const fetchPromises = _.map(selectedTopicsUrls, (topicUrl) => redditService.getPostsFromSubreddit(topicUrl));
+      const selectedTopicUrls = topicsSelectors.getSelectedTopicUrls(getState());
+      const fetchPromises = _.map(selectedTopicUrls, (topicUrl) => redditService.getPostsFromSubreddit(topicUrl));
       const topicPosts = await Promise.all(fetchPromises);
       const postsById = _.keyBy(_.flatten(topicPosts), (post) => post.id);
       dispatch({ type: types.POSTS_FETCHED, postsById });

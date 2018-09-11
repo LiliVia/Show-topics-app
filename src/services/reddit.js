@@ -42,19 +42,17 @@ class RedditService {
         Accept: 'application/json'
       }
     });
-
     if (!response.ok) {
       throw new Error(`RedditService getPostsFromSubreddit failed, HTTP status ${response.status}`);
     }
-
     const data = await response.json();
     const children = _.get(data, 'data.children');
-
     if (!children) {
       throw new Error(`RedditService getPostsFromSubreddit failed, children not returned`);
     }
 
     return _.map(children, (post) => {
+      // abstract away the specifics of the reddit API response and take only the fields we care about
       const body = _.get(post, 'data.selftext_html');
       return {
         id: _.get(post, 'data.id'),
