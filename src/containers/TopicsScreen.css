@@ -34,7 +34,7 @@
   position: fixed;
   top: 50%;
   right: calc((100vw - 640px)/2 - 90px);
-  background: url('../../img/right_arrow.png');
+  background: url('../img/right_arrow.png');
   background-size: 80px 80px;
   width: 80px;
   height: 80px;
