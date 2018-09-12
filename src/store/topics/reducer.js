@@ -29,20 +29,18 @@ export default function reduce(state = initialState, action = {}) {
 
 //selectors
 
-export function getTopicsByUrl(state) {
-  return state.topics.topicsByUrl;
-}
-
-export function getTopicsUrlArray(state) {
-  return _.keys(state.topics.topicsByUrl);
+export function getTopics(state) {
+  const topicsByUrl = state.topics.topicsByUrl;
+  const topicsUrlArray = _.keys(topicsByUrl);
+  return [topicsByUrl, topicsUrlArray];
 }
 
 export function getSelectedTopicUrls(state) {
   return state.topics.selectedTopicUrls;
 }
 
-export function getSelectedTopicUrlsMap(state) {
-  return _.keyBy(state.topics.selectedTopicUrls);
+export function getSelectedTopicsByUrl(state) {
+  return _.mapValues(_.keyBy(state.topics.selectedTopicUrls), (topicUrl) => state.topics.topicsByUrl[topicUrl]);
 }
 
 export function isTopicSelectionValid(state) {
