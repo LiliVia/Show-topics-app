@@ -26,3 +26,7 @@ export function getPosts(state) {
   const postsIdArray = _.keys(postsById);
   return [postsById, postsIdArray];
 }
+
+export function getCurrentFilter(state) {
+  return state.posts.currentFilter;
+}
