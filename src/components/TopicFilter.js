@@ -3,6 +3,10 @@ import React, { Component } from 'react';
 
 export default class TopicFilter extends Component {
 
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <div className={this.props.className}>
@@ -27,6 +31,8 @@ export default class TopicFilter extends Component {
 
   onFilterClick(id) {
     if (id === this.props.selected) return;
-    this.props.onChanged(id);
+    if (typeof this.props.onChanged === 'function') {
+      this.props.onChanged(id);
+    }
   }
 }

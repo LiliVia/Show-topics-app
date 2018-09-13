@@ -2,6 +2,7 @@ import _ from 'lodash';
 import * as types from './actionTypes';
 import redditService from '../../services/reddit';
 import * as topicsSelectors from './reducer';
+import * as postsAction from '../posts/actions';
 
 export function fetchTopics() {
   return async (dispatch, getState) => {
@@ -18,10 +19,18 @@ export function fetchTopics() {
 export function selectTopic(topicUrl) {
   return (dispatch, getState) => {
     const selectedTopics = topicsSelectors.getSelectedTopicUrls(getState());
-    const newSelectedTopics = selectedTopics.length < 3 ?
-      selectedTopics.concat(topicUrl) :
-      selectedTopics.slice(1).concat(topicUrl);
+    let newSelectedTopics;
+    if (_.indexOf(selectedTopics, topicUrl) !== -1) {
+      newSelectedTopics = _.without(selectedTopics, topicUrl);
+    } else {
+      newSelectedTopics = selectedTopics.length < 3 ?
+        selectedTopics.concat(topicUrl) :
+        selectedTopics.slice(1).concat(topicUrl);
+    }
     dispatch({ type: types.TOPICS_SELECTED, selectedTopicUrls: newSelectedTopics })
+    if (newSelectedTopics.length === 3) {
+      dispatch(postsAction.fetchPosts());
+    }
   };
 }
 

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import autoBind from 'react-autobind';
 import { connect } from 'react-redux';
 import './TopicsScreen.css';
 import * as topicsActions from '../store/topics/actions';
@@ -8,6 +9,11 @@ import ListRow from '../components/ListRow';
 
 class TopicsScreen extends Component {
 
+  constructor(props) {
+    super(props);
+    autoBind(this);
+  }
+
   componentDidMount() {
     this.props.dispatch(topicsActions.fetchTopics());
   }
@@ -16,12 +22,13 @@ class TopicsScreen extends Component {
     if (!this.props.rowsById) return this.renderLoading();
     return (
       <div className="TopicsScreen">
+        <h3>Choose three interesting topics</h3>
         <ListView
           rowsIdArray={this.props.rowsIdArray}
           rowsById={this.props.rowsById}
           renderRow={this.renderRow.bind(this)} />
         {!this.props.canFinalizeSelection ? false :
-          <button className="NextScreen" onClick={this.onNextScreenClick.bind(this)} />
+          <button className="NextScreen" onClick={this.onNextScreenClick} />
         }
       </div>
     );
@@ -38,7 +45,7 @@ class TopicsScreen extends Component {
     return (
       <ListRow
         rowId={rowId}
-        onClick={this.onRowClick.bind(this)}
+        onClick={this.onRowClick}
         selected={selected}>
         <h3>{row.title}</h3>
         <p>{row.description}</p>

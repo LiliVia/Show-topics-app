@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import autoBind from 'react-autobind';
 import { connect } from 'react-redux';
 import './PostsScreen.css';
 import * as postsActions from '../store/posts/actions';
@@ -7,27 +8,35 @@ import * as topicsSelectors from '../store/topics/reducer';
 import ListView from '../components/ListView';
 import ListRow from '../components/ListRow';
 import TopicFilter from '../components/TopicFilter';
+import PostView from '../components/PostView';
 
 class PostsScreen extends Component {
 
-  componentDidMount() {
-    this.props.dispatch(postsActions.fetchPosts());
+  constructor(props) {
+    super(props);
+    autoBind(this);
   }
 
   render() {
     if (!this.props.rowsById) return this.renderLoading();
     return (
       <div className="PostsScreen">
-        <TopicFilter
-          className="TopicFilter"
-          topics={this.props.topicsByUrl}
-          selected={this.props.currentFilter}
-          onChanged={this.onFilterChanged.bind(this)}
-        />
-        <ListView
-          rowsIdArray={this.props.rowsIdArray}
-          rowsById={this.props.rowsById}
-          renderRow={this.renderRow.bind(this)} />
+        <div className="LeftPane">
+
+          <TopicFilter
+            className="TopicFilter"
+            topics={this.props.topicsByUrl}
+            selected={this.props.currentFilter}
+            onChanged={this.onFilterChanged}
+          />
+          <ListView
+            rowsIdArray={this.props.rowsIdArray}
+            rowsById={this.props.rowsById}
+            renderRow={this.renderRow} />
+        </div>
+        <div className="ContentPane">
+          <PostView post={this.props.currentPost} />
+        </div>
       </div>
     );
   }
@@ -39,8 +48,12 @@ class PostsScreen extends Component {
   }
 
   renderRow(rowId, row) {
+    const selected = this.props.currentPost === row;
     return (
-      <ListRow rowId={rowId}>
+      <ListRow
+        rowId={rowId}
+        onClick={this.onRowClick}
+        selected={selected}>
         {!row.thumbnail ? false :
           <img className="thumbnail" src={row.thumbnail} alt="thumbnail" />
         }
@@ -53,6 +66,10 @@ class PostsScreen extends Component {
     this.props.dispatch(postsActions.changeFilter(newFilter));
   }
 
+  onRowClick(rowId) {
+    this.props.dispatch(postsActions.selectPost(rowId));
+  }
+
 }
 
 
@@ -62,7 +79,8 @@ function mapStateToProps(state) {
     rowsById: postsById,
     rowsIdArray: postsIdArray,
     topicsByUrl: topicsSelectors.getSelectedTopicsByUrl(state),
-    currentFilter: postsSelectors.getCurrentFilter(state)
+    currentFilter: postsSelectors.getCurrentFilter(state),
+    currentPost: postsSelectors.getCurrentPost(state)
   };
 }
 
